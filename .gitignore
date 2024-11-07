@@ -1,0 +1,15 @@
+*.asv
+*.prj
+*test*
+*nonagpl*
+lifmatParams*.mat
+lifmatParams.txt
+*codegen*
+inputmats*
+*.fig
+*.zip
+*.png
+*.log
+*later*
+*.mexw64
+*.prj.bak

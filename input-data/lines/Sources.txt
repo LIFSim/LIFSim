@@ -1,0 +1,14 @@
+
+File name           | Source 
+NO_lines.mat        | Bessler et al. A versatile modeling tool for nitric oxide LIF spectra 2003
+NO_partfunc.mat     | Bessler et al. A versatile modeling tool for nitric oxide LIF spectra 2003
+
+SiO_lines.mat       | DOI: 10.1016/j.combustflame.2020.12.020
+SiO_lines_2021.mat  | Adjustment of table 2 in DOI: 10.1016/j.combustflame.2020.12.020
+SiO_partfunc.mat    | DOI: 10.1093/mnras/stab3267
+
+OH_lines.mat        | HITRAN DOI: 10.1016/j.jqsrt.2021.107949
+OH_partfunc.mat     | HITRAN DOI: 10.1016/j.jqsrt.2021.107949
+
+O2_lines.mat        | HITRAN DOI: 10.1016/j.jqsrt.2021.107949
+O2_partfunc.mat     | HITRAN DOI: 10.1016/j.jqsrt.2021.107949
