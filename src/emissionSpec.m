@@ -187,7 +187,7 @@ for ln = 1:llines
 
         for wn = within
             gammaEm = interp1(range, gOverEm, xq(wn), "linear", "extrap");
-            EmSpectra(ln, wn) = EmSpectra(ln, wn) + gammaEm*const2;
+            EmSpectra(ln, wn) = EmSpectra(ln, wn) + gammaEm'.*const2;
         end
     end
 
