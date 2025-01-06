@@ -1,0 +1,7 @@
+1. T: 2000.62 K
+2. dnuGL: 0.18 1/cm
+3. dnuLL:0 1/cm
+4. Scale:216.41
+5. dnuSh:0.03 1/cm
+6. Offset:0.11
+7. Slope:0

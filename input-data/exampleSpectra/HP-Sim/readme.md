@@ -1,0 +1,1 @@
+The the data prefixed with meas, are synthesized with the legacy LIFSim (see Settings_1.png, Settings_2.png, Settings_3.png). And the data prefixed with fit are resulting fit spectra from the current version. The files prefixed with fitParam are the corresponding result fit parameters. See fig. 11 in paper (the data here are not normalized).
