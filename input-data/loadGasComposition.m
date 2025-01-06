@@ -9,7 +9,7 @@ function gas = loadGasComposition(path)
 % This function considers mole fractions of a given gas composition. The given
 % composition should be complemented by a model in collisions.m. The output
 % will be a table with columns 'molecule' and 'fraction'. The elements with
-% 0 will not be imported. The fractions will be normalized to 1.
+% 0 will not be imported. The fractions will be normalized to sum 1.
 %
 % INPUTS:
 %   path     -  System path to your spreadsheet, e.g. "D:/path/to/file.csv", if
