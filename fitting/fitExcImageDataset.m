@@ -101,8 +101,8 @@ measSpec = images3d(starty,startx,:);
 measSpec = measSpec(:);
 measSpec = measSpec./max(measSpec);
 
-lb = startFit-bounds;
-ub = startFit+bounds;
+lb = startFit(:)-bounds(:);
+ub = startFit(:)+bounds(:);
 
 p =  namedargs2cell(specParams);
 
@@ -148,13 +148,13 @@ for px = 1:pixelsToFit
 
         measSpec = images3d(y,x,:);
         measSpec = measSpec(:);
-        measSpec = measSpec./max(measSpec);
+        % measSpec = measSpec./max(measSpec);
 
         nearestFit = fittedImage(yf, xf, : );
         nearestFit = nearestFit(:);
 
-        lb = nearestFit-bounds;
-        ub = nearestFit+bounds;
+        lb = nearestFit(:)-bounds(:);
+        ub = nearestFit(:)+bounds(:);
 
         pxfitHandle = @(~) fitExcitationSpec(...
             wnum, measSpec, linelist, MM, nearestFit(:), options, ...
