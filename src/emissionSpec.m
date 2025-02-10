@@ -167,9 +167,13 @@ for ln = 1:llines
 
         emdnuG = dnuGFun(T, MM, emLine.nu0);
         rangeLimit = round((em.dnuL+emdnuG+inst.dnuGsm +inst.dnuLsm)*em.limit, 2, 'significant');
-        emRange  = linspace(-rangeLimit, rangeLimit, em.limit*2) ; %-rangeLimit:emRes:rangeLimit;
+        emRange  = -rangeLimit:emRes:rangeLimit;
 
         %spectrometer emission interaction
+        % To speed up:
+        % This can be assumed the same and move outside the for loop, if
+        % nu0 is in the same range, then the change in emdnuG is
+        % insignificant. 
         gOverEm = overlap(emLine.nu0,ex.resEx, emRange, em_aL,...
             emdnuG, em.dnuL, inst.dnuGsm, inst.dnuLsm);
 
@@ -182,7 +186,7 @@ for ln = 1:llines
         DD = abs(emWnum-emLine.nu0-em.dnuSh);
         xq = DD./emRes;
 
-        within = em.limit>DD;
+        within = rangeLimit>DD;
         within = find(within);
 
         for wn = within
