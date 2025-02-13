@@ -30,7 +30,8 @@ function [gOver,g1,g2] = overlap(nu0, res, range, aL, dnuG1, dnuL1, dnuG2, dnuL2
 %   dnuL2  - The Lorentzian component of the laser profile.
 %
 % OUTPUT:
-%   gOver - The calculated spectral overlap between the signal 1 and signal 2.
+%   gOver - The calculated spectral overlap between the lineshape 1 and
+%           lineshape 2.
 %   g1    - The calculated lineshape 1.
 %   g2    - The calculated lineshape 2.
 %
@@ -40,6 +41,12 @@ function [gOver,g1,g2] = overlap(nu0, res, range, aL, dnuG1, dnuL1, dnuG2, dnuL2
 %
 % COPYRIGHT 2024:
 %   EMPI-RF - University of Duisburg-Essen
+%
+% CHANGES:
+% 2025-02-13: 
+%   Change 1: Normalizing g1 and g2 according to Partridge and Normand, 
+%             aka Y and L their paper: https://doi.org/10.1364/AO.34.002645
+%   Change 2: Removed the normalization of gOver
 
 arguments 
     nu0 (1,1) double
@@ -55,15 +62,19 @@ end
 nu  = -fliplr(range-nu0);
 g1 = voigtlineMcLean(nu,nu0,dnuG1,dnuL1,aL);
 g2 = voigtlineMcLean(nu,nu0, dnuG2, dnuL2, aL);
-gOver = conv(g2, g1)*res;
+%%% Start change 1 
+g1 = g1./max(g1);
+g2 = g2./max(g2);
+%%% End change 1
+gOver = conv(g2, g1).*res;
 
 i = floor(length(gOver)/2);
 if i == 0
     error('Error: overlap.m')
 end
- 
+
+
 gOver = gOver(i+1:end);
-gOver = gOver./max(gOver(:));
 end
 
 

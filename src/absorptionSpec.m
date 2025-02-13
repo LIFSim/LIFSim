@@ -63,6 +63,12 @@ function spec = absorptionSpec(wnum, linelist, MM, T, dnuGL, dnuLL, params)
 %
 % COPYRIGHT 2024:
 %   EMPI-RF - University of Duisburg-Essen
+% 
+% CHANGES:
+% 2025-02-13: 
+%   Change 1: Dividing gOver by total FWHM according to Partridge and
+%             Normand, gOver is capital Gamma in https://doi.org/10.1364/AO.34.002645
+%   Change 2: Dividing by speed of light, c, to change gOver from cm to s.
 
 arguments
     wnum (1,:) double
@@ -81,7 +87,7 @@ arguments
     params.L (1,1) double = 1
 end
 
-h = CONSTANTS("h"); 
+
 aL = 1;
  
 res = round((wnum(2)-wnum(1))/params.resFactor, 2, "significant");
@@ -99,16 +105,28 @@ range  = -rangeLimit:res:rangeLimit;
 % use any transition for nu0 >> faster computation,
 % the difference is negligible in dnuG if calculated for all transition
 % in a limited range
-
 gOver = overlap(nu0, res, range, aL, dnuG, params.dnuL, dnuGL, dnuLL);
-
 lgOver = length(gOver)-1;
+
+%%% Start change 1
+halfMax = max(gOver) / 2;
+dnu = interp1(gOver, 0:lgOver,halfMax,'linear', 'extrap')*res*2; 
+% *2 because gOver represents the overlap function from the peak to the end.
+% the value is based on the index of the matrix gOver, thus *res
+
+% Change the dimensionless gamma to cm. Gamma = dnu*g. ref Partridge and
+% Normand, https://doi.org/10.1364/AO.34.002645
+gOver = gOver./dnu; 
+%%% End change 1
+
+
 spec = double(zeros(1,lwnum));
-LN = params.N*params.L;
+
+
 for ln = 1:llines
     line = linelist{ln};
 
-    DD = abs(wnum-line.nu0-params.dnuSh); % distances of each wavenumber to line(ss)
+    DD = abs(wnum-line.nu0-params.dnuSh); % distances of each wavenumber to line(s)
     xq = DD./res; % convert to number within range, for interpolation
     withinDistance = rangeLimit>DD; % calc all conditions
     
@@ -116,12 +134,23 @@ for ln = 1:llines
         if withinDistance(wn) % if distance larger  7 time linewidth then include
             gamma = interp1(0:lgOver,gOver,xq(wn),'linear', 'extrap');
             f_B = calcFb(line.jLo, T, params.Z, line.EGr);
-            overlapWeighed = gamma*h*line.B*f_B*LN*wnum(wn);
+            overlapWeighed = gamma*line.B*f_B*wnum(wn); 
             spec(wn) = spec(wn) + overlapWeighed;
         end
     end
     
 end
+
+
+%%% Start change 2
+% J*s*(1/cm)*(m^3)*(1/J)*(s^-2)*cm*(m*^-3)*m --> m/s
+% so devide by c to have unitless absorbance
+h = CONSTANTS("h"); 
+c = CONSTANTS("c");
+hNLg = (h*params.N*params.L./c);
+
+spec= spec.*hNLg;
+%%% End change 2
 
 if params.normalize
     spec= spec./max(spec);
