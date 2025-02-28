@@ -69,6 +69,11 @@ function spec = absorptionSpec(wnum, linelist, MM, T, dnuGL, dnuLL, params)
 %   Change 1: Dividing gOver by total FWHM according to Partridge and
 %             Normand, gOver is capital Gamma in https://doi.org/10.1364/AO.34.002645
 %   Change 2: Dividing by speed of light, c, to change gOver from cm to s.
+%
+% 2025-02-28: 
+%   Change 3: Added normalization for gOver through numerical integration
+%   so that changing the linewidth does not affect the integrated
+%   absorbance. By Weitian Wang.
 
 arguments
     wnum (1,:) double
@@ -93,7 +98,7 @@ aL = 1;
 res = round((wnum(2)-wnum(1))/params.resFactor, 2, "significant");
 
 nu0 = linelist{1}.nu0;
-dnuG = dnuGFun(T, MM, nu0); % doppler broadening for transition
+dnuG = dnuGFun(T, MM, nu0); % FWHM doppler broadening for transition
 
 
 rangeLimit = round((params.dnuL+dnuG+dnuGL+dnuLL)*params.limit, 2, "significant");
@@ -119,6 +124,13 @@ dnu = interp1(gOver, 0:lgOver,halfMax,'linear', 'extrap')*res*2;
 gOver = gOver./dnu; 
 %%% End change 1
 
+%%% Start change 3
+gOver = gOver/(trapz(gOver)*res)/2; 
+% Norm the line shape by numerical intergration to make gamma independent of line strength. 
+% A better solution can be to find the relationship between the numerical value
+% of gamma and the parameters. /2 because gOve rrepresents the overlap function
+% from the peak to the end.
+%%% End change 3
 
 spec = double(zeros(1,lwnum));
 
