@@ -46,7 +46,14 @@ function [gOver,g1,g2] = overlap(nu0, res, range, aL, dnuG1, dnuL1, dnuG2, dnuL2
 % 2025-02-13: 
 %   Change 1: Normalizing g1 and g2 according to Partridge and Normand, 
 %             aka Y and L their paper: https://doi.org/10.1364/AO.34.002645
-%   Change 2: Removed the normalization of gOver
+%   Change 2: Removed the normalization of gOver.
+%             Changes by Abbas El Moussawi.
+%
+% 2025-02-28: 
+%   Change 3: Added normalization for gOver through numerical integration
+%             so that changing the linewidth does not affect the integrated
+%             absorbance. 
+%             By Weitian Wang.
 
 arguments 
     nu0 (1,1) double
@@ -73,6 +80,13 @@ if i == 0
     error('Error: overlap.m')
 end
 
+
+%%% Start change 3
+gOver = gOver/(trapz(gOver)*res); 
+% Norm the line shape by numerical intergration to make gamma independent of line strength. 
+% A better solution can be to find the relationship between the numerical value
+% of gamma and the parameters.  
+%%% End change 3
 
 gOver = gOver(i+1:end);
 end
